@@ -8,6 +8,7 @@ class UrlMappings {
         }
 
         "/"(controller: 'view', action: 'index')
+        "/play/$token"(controller: 'view', action: 'mobileView')
         "500"(view: '/error')
     }
 }

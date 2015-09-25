@@ -67,13 +67,13 @@
         <span id="fast_lap_time" class="hud">Fastest Lap: <span id="fast_lap_time_value" class="value">0.0</span></span>
     </div>
     <canvas id="canvas">
-        Sorry, this example cannot be run because your browser does not support the &lt;canvas&gt; element
+        Sorry, OneGame cannot be run because your browser does not support the &lt;canvas&gt; element
     </canvas>
 </div>
 
 <audio id='music'>
     <source src="music/racer.ogg">
-    <source src="${resource(dir: 'music',file: 'racer.mp3')}">
+    <source src="${resource(dir: 'music', file: 'racer.mp3')}">
 </audio>
 <span id="mute"></span>
 <script>
@@ -82,5 +82,11 @@
 <script src="${resource(dir: 'js', file: 'stats.js')}"></script>
 <script src="${resource(dir: 'js', file: 'common.js')}"></script>
 <script src="${resource(dir: 'js', file: 'play.js')}"></script>
+<script src="https://js.pusher.com/3.0/pusher.min.js"></script>
+<script>
+    var apiKey = "${apiKey}";
+    var channelId = "${channelId}";
+</script>
+<script src="${resource(dir: 'js', file: 'control.js')}"></script>
 </body>
 </html>

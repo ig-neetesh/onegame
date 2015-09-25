@@ -5,9 +5,21 @@
     <title>OneGame</title>
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'bootstrap.min.css')}" type="text/css">
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'creative.css')}" type="text/css">
+    <script src="${resource(dir: 'js', file: 'angular.min.js')}"></script>
+    <script>
+        var token = "${token}";
+        var url = "${grailsApplication.config.grails.serverURL}/play/";
+        var oneGame = angular.module('OneGame', []);
+        oneGame.controller('myCtrl', function ($scope) {
+            $scope.token = token;
+            $scope.playUrl = function () {
+                return (url + token);
+            };
+        });
+    </script>
 </head>
 
-<body id="page-top">
+<body id="page-top" ng-app="OneGame" ng-controller="myCtrl">
 <header>
     <div class="header-content">
         <div class="header-content-inner">
@@ -15,7 +27,11 @@
             <hr>
 
             <p>Choose your mode:</p>
-            <a href="#about" class="btn btn-primary btn-xl page-scroll">Find Out More</a>
+            <input type="radio" name="mode" value="keyboard"> Keyboard <br>
+            <input type="radio" name="mode" value="mobile"> Mobile <br>
+            <input type="radio" name="mode" value="steering"> Steering <br>
+
+            <div class="btn btn-primary btn-xl page-scroll">{{playUrl()}}</div>
         </div>
     </div>
 </header>

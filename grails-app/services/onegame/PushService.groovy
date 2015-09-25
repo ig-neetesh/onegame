@@ -14,9 +14,9 @@ class PushService {
     def grailsApplication
 
     def pusherHost = config.pusherapp.host
-    def pusherApplicationId = config.pusherapp.applicationId
-    def pusherApplicationKey = config.pusherapp.applicationKey
-    def pusherApplicationSecret = config.pusherapp.applicationSecret
+    def pusherApplicationId = config.pusherapp.applicationIds[0]
+    def pusherApplicationKey = config.pusherapp.applicationKeys[0]
+    def pusherApplicationSecret = config.pusherapp.applicationSecrets[0]
 
     private def byteArrayToString(byte[] data) {
         BigInteger bigInteger = new BigInteger(1, data)
