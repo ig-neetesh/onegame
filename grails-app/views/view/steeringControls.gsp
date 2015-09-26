@@ -16,6 +16,13 @@
         -ms-transform: rotate(90deg); /* IE 9 */
         -webkit-transform: rotate(90deg); /* Chrome, Safari, Opera */
         transform: rotate(90deg);
+        position: fixed;
+        top: 38%;
+    }
+
+    .imgc {
+        margin: 0 auto;
+        width: 226px;
     }
     </style>
     <script>
@@ -25,6 +32,13 @@
 
         $(document).ready(function () {
             var token = $("#token").val();
+            var mainToken = token;
+            var dual = false;
+            if(token.endsWith("l") || token.endsWith("r")){
+                dual = true;
+                token = token.replace("l","");
+                token = token.replace("r","");
+            }
             var interval = $("#interval").val();
             console.log("Token : " + token);
             var mobileInitiated = false;
@@ -32,7 +46,8 @@
                 x: 0,
                 y: 0,
                 z: 0,
-                token: token
+                token: token,
+                dual: dual
             };
 
             var toNumber = function (point) {
@@ -60,20 +75,20 @@
                 }
             })();
 
-            var peerId = token + "steering";
+            var peerId = mainToken + "steering";
             var peer = new Peer(peerId, {key: apiKey});
 
             var conn = peer.connect(token + "index");
 
             var connDisplay;
-            peer.on('connection', function(conn) {
-                conn.on('data', function(data){
+            peer.on('connection', function (conn) {
+                conn.on('data', function (data) {
                     connDisplay = peer.connect(token + "display");
                     initiateTimer(interval);
                 });
             });
 
-            conn.on('open', function(){
+            conn.on('open', function () {
                 conn.send('INIT');
             });
 
@@ -97,9 +112,10 @@
     </script>
 </head>
 
-<body>
-<img id="start" src="${resource(dir: 'images', file: 'start_button.gif')}">
-<span id="Y"></span>
+<body id="myBody">
+<div class="imgc">
+    <img id="start" src="${resource(dir: 'images', file: 'start_button.gif')}" width="213" height="213">
+</div>
 <input type="hidden" id="token" value="${token}">
 <input type="hidden" id="interval" value="${interval}">
 </body>

@@ -122,7 +122,6 @@
     };
 
     function getDir(data) {
-        $("#yData").innerHTML = "<p>" + (data.y) + "</p>";
         if (data.y < -8 || data.y > 8) {
             return "STOP";
         }
@@ -138,9 +137,31 @@
         return "FORWARD";
     }
 
+    function getDualDir() {
+        if (data.y < -8 || data.y > 8) {
+            return "STOP";
+        }
+
+        if (data.x > 2) {
+            return "LEFT";
+        }
+
+        if (data.x < 2) {
+            return "RIGHT";
+        }
+
+        if(data.y > 4){
+            return "FORWARD";
+        }
+        return "STOP";
+    }
+
     var eventCallback = function (data) {
         console.log(data);
         var dir = getDir(data);
+        if(data.dual){
+            dir = getDir(data);
+        }
         var down = 'down';
         var up = 'up';
         switch (dir) {

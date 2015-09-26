@@ -168,6 +168,7 @@
         </div>
     </div>
 </header>
+%{--
 
 <section class="bg-primary" id="about">
     <div class="container">
@@ -296,6 +297,7 @@
         </div>
     </div>
 </section>
+--}%
 
 <section id="contact">
     <div class="container">
