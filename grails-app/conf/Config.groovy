@@ -98,5 +98,5 @@ pusherapp {
     applicationIds = ["144332", "144335", "144338", "144339", "144340"]
     applicationKeys = ["9abe94e8385edabda6dd", "7a98549d2f0eb770043c", "d4ee4aed622450ab0351", "d6c65348acbd2b17c58d", "bcebe6af87150d9bb0bb"]
     applicationSecrets = ["10dcbbd04faed1626a77", "51082f77985513fe0073", "10e93aae3da797478478", "0cf0483cb301e0ab2bf9", "df5ecd1867be5eb30256"]
-    dataPostIntervals = 300
+    dataPostInterval = 1000
 }

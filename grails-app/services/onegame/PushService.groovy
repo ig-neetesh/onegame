@@ -1,7 +1,5 @@
 package onegame
 
-import grails.util.Holders
-
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 import java.security.InvalidKeyException
@@ -9,14 +7,19 @@ import java.security.InvalidKeyException
 class PushService {
     static transactional = false
 
+    def credentialProviderService
 
-    def config = Holders.config
-    def grailsApplication
+    private static Map settings = [:]
 
-    def pusherHost = config.pusherapp.host
-    def pusherApplicationId = config.pusherapp.applicationIds[0]
-    def pusherApplicationKey = config.pusherapp.applicationKeys[0]
-    def pusherApplicationSecret = config.pusherapp.applicationSecrets[0]
+    private Map getConfig() {
+        if (!settings) {
+            settings["pusherHost"] = credentialProviderService.pusherHost
+            settings["pusherApplicationId"] = credentialProviderService.applicationId
+            settings["pusherApplicationKey"] = credentialProviderService.applicationKey
+            settings["pusherApplicationSecret"] = credentialProviderService.applicationSecret
+        }
+        return settings
+    }
 
     private def byteArrayToString(byte[] data) {
         BigInteger bigInteger = new BigInteger(1, data)
@@ -35,7 +38,7 @@ class PushService {
      */
     private def hmacsha256Representation(String data) {
         try {
-            final SecretKeySpec signingKey = new SecretKeySpec(pusherApplicationSecret.getBytes(), "HmacSHA256")
+            final SecretKeySpec signingKey = new SecretKeySpec(config.pusherApplicationSecret.getBytes(), "HmacSHA256")
 
             final Mac mac = Mac.getInstance("HmacSHA256")
             mac.init(signingKey)
@@ -57,7 +60,7 @@ class PushService {
     private def buildQuery(String eventName, def jsonData, String socketID) {
         StringBuffer buffer = new StringBuffer()
         buffer.append("auth_key=")
-        buffer.append(pusherApplicationKey)
+        buffer.append(config.pusherApplicationKey)
         buffer.append("&auth_timestamp=")
         buffer.append(System.currentTimeMillis() / 1000)
         buffer.append("&auth_version=1.0")
@@ -81,7 +84,7 @@ class PushService {
         StringBuffer buffer = new StringBuffer()
         //Application ID
         buffer.append("/apps/")
-        buffer.append(pusherApplicationId)
+        buffer.append(config.pusherApplicationId)
         //Channel name
         buffer.append("/channels/")
         buffer.append(channelName)
@@ -116,7 +119,7 @@ class PushService {
      */
     private def buildURI(String uriPath, String query, String signature) {
         StringBuffer buffer = new StringBuffer()
-        buffer.append(pusherHost)
+        buffer.append(config.pusherHost)
         buffer.append(uriPath)
         buffer.append("?")
         buffer.append(query)
@@ -166,6 +169,6 @@ class PushService {
         if (userData) {
             authToken += ":${userData}"
         }
-        pusherApplicationKey + ':' + hmacsha256Representation(authToken)
+        config.pusherApplicationKey + ':' + hmacsha256Representation(authToken)
     }
 }

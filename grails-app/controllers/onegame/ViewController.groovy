@@ -5,21 +5,23 @@ import groovy.util.logging.Log4j
 @Log4j
 class ViewController {
 
+    def dataProviderService
+    def credentialProviderService
+
     def index() {
-        [token: "hello"]
+        String apiKey = credentialProviderService.applicationKey
+        [apiKey: apiKey, token: dataProviderService.getNewToken(session)]
     }
 
-    def display() {
-        String apiKey = grailsApplication.config.pusherapp.applicationKeys[0]
-        String channelId = "xyz";
-        [apiKey: apiKey, channelId: channelId]
+    def display(String token) {
+        String apiKey = credentialProviderService.applicationKey
+        int interval = credentialProviderService.dataPostInterval
+        String viewName = dataProviderService.isMobileBrowser(request) ? 'steeringControls' : 'frontWindow'
+        Map settings = [
+                token   : token,
+                interval: interval,
+                apiKey  : apiKey
+        ]
+        render(view: viewName, model: settings)
     }
-
-    def mobileView(String token) {
-        log.info("hit to connect through mobile ${token}")
-        String viewName = Util.isMobileBrowser(request) ? 'mobileIndex' : 'mobileError'
-        render(view: viewName, params: [token: token, interval: grailsApplication.config.pusherapp.dataPostIntervals])
-    }
-
-
 }

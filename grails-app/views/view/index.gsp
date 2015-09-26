@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'bootstrap.min.css')}" type="text/css">
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'creative.css')}" type="text/css">
     <script src="${resource(dir: 'js', file: 'angular.min.js')}"></script>
+    <script src="https://js.pusher.com/3.0/pusher.min.js"></script>
     <script>
         var token = "${token}";
         var url = "${grailsApplication.config.grails.serverURL}/play/";
@@ -16,7 +17,17 @@
                 return (url + token);
             };
         });
+
+        var apiKey = "${apiKey}";
+        var channelId = token;
+        var eventName = "init";
+        var eventCallback = function (data) {
+            console.log(data);
+            window.location.assign(url + token);
+        };
+        console.log("DONE code");
     </script>
+    <script src="${resource(dir: 'js', file: 'control.js')}"></script>
 </head>
 
 <body id="page-top" ng-app="OneGame" ng-controller="myCtrl">
