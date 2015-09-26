@@ -6,9 +6,25 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link href="${resource(dir: 'css', file: 'common.css')}" rel="stylesheet" type="text/css"/>
 </head>
+<style>
+#left, #right {
+    position: fixed;
+    width: 75px;
+    top: 100px;
+}
+
+#left {
+    left: 100px;
+}
+
+#right {
+    right: 100px;
+}
+</style>
 
 <body>
-
+<img id="left" src="${resource(dir: 'images', file: 'left.png')}">
+<img id="right" src="${resource(dir: 'images', file: 'right.png')}">
 <table id="controls" style="display: none">
     <tr><td id="fps" colspan="2" align="right"></td></tr>
     <tr>
@@ -142,26 +158,42 @@
             }
         }
     };
+    function hideAll() {
+        $("#left").hide();
+        $("#right").hide();
+    }
+    var setDirection = function (dir) {
+        hideAll();
+        $("#" + dir).show();
+    };
+
     var eventCallback = function (data) {
         console.log(data);
-        var mode = 'down';
+        var down = 'down';
+        var up = 'up';
         switch (data.dir) {
             case "LEFT":
-                onkey(KEY.UP, mode);
-                onkey(KEY.LEFT, mode);
+                setDirection("left");
+                onkey(KEY.UP, down);
+                onkey(KEY.LEFT, down);
                 break;
             case "RIGHT":
-                onkey(KEY.UP, mode);
-                onkey(KEY.RIGHT, mode);
+                setDirection("right");
+                onkey(KEY.UP, down);
+                onkey(KEY.RIGHT, down);
                 break;
             case "FORWARD":
-                onkey(KEY.UP, mode);
+                onkey(KEY.UP, down);
                 break;
             case "BACKWARD":
-                onkey(KEY.DOWN, mode);
+                onkey(KEY.UP, up);
+                onkey(KEY.LEFT, up);
+                onkey(KEY.RIGHT, up);
+                onkey(KEY.DOWN, down);
                 break;
         }
     };
+    hideAll();
 </script>
 <script src="${resource(dir: 'js', file: 'control.js')}"></script>
 </body>

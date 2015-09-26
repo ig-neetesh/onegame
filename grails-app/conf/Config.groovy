@@ -76,6 +76,10 @@ log4j = {
     //appenders {
     //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
     //}
+    appenders {
+        console name: 'stdout', layout: pattern(conversionPattern: '%c{2} %m%n')
+        file name: 'fileLogger', file: '/tmp/application.log', layout: pattern(conversionPattern: '%d{dd-MM-yyyy HH:mm:ss,SSS} %5p %c{1} - %m%n')
+    }
 
     error 'org.codehaus.groovy.grails.web.servlet',        // controllers
             'org.codehaus.groovy.grails.web.pages',          // GSP
@@ -90,7 +94,7 @@ log4j = {
             'net.sf.ehcache.hibernate'
     info 'onegame'
 }
-
+grails.serverURL = "http://localhost:8080"
 grails.app.context = "/"
 
 pusherapp {
