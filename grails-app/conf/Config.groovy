@@ -94,7 +94,7 @@ log4j = {
             'net.sf.ehcache.hibernate'
     info 'onegame'
 }
-grails.serverURL = "http://localhost:8080"
+grails.serverURL = "https://onegame.herokuapp.com"
 grails.app.context = "/"
 
 pusherapp {

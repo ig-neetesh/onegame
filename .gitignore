@@ -19,3 +19,4 @@ target/
 .idea
 logs/
 out/
+grails-app/conf/LocalConfig.groovy
