@@ -42,7 +42,7 @@
             <input type="radio" name="mode" value="mobile"> Mobile <br>
             <input type="radio" name="mode" value="steering"> Steering <br>
 
-            <div class="btn btn-primary btn-xl page-scroll">{{playUrl()}}</div>
+            <div class="btn btn-primary btn-xl page-scroll" style="text-transform: lowercase;font-size: xx-large">{{playUrl()}}</div>
         </div>
     </div>
 </header>

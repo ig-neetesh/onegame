@@ -15,7 +15,7 @@ class SteeringController {
             event = "init"
             log.info "=============================INIT"
         }
-        log.info("event Data : ${co.properties} and DIR : ${dir}")
+        log.info("event Data : ${co.y} and DIR : ${dir}")
         pushService.triggerPush(co.token, event, new JSON([dir: dir.toString()]).toString())
         render("OK")
     }
