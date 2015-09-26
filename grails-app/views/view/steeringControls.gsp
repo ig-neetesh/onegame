@@ -10,6 +10,7 @@
 <head>
     <title>OneGame</title>
     <script src="${resource(dir: 'js', file: 'jquery-1.11.3.min.js')}"></script>
+    <script src="${resource(dir: 'js', file: 'peer.js')}"></script>
     <style>
     img {
         -ms-transform: rotate(90deg); /* IE 9 */
@@ -20,10 +21,11 @@
     <script>
         var steeringImage = "${resource(dir: 'images',file: 'steering.jpg')}";
         var steeringUrl = "${g.createLink(controller: 'steering',action: 'control')}";
+        var apiKey = "${apiKey}";
 
         $(document).ready(function () {
             var token = $("#token").val();
-            var interval = $("interval").val();
+            var interval = $("#interval").val();
             console.log("Token : " + token);
             var mobileInitiated = false;
             var steeringData = {
@@ -37,7 +39,7 @@
                 return isNaN(point) ? -1000 : point;
             };
 
-            var registerDeviceMotionEvent = function () {
+            (function () {
                 if (window.DeviceMotionEvent) {
                     console.log("working");
                     window.addEventListener('devicemotion', function (event) {
@@ -56,38 +58,41 @@
                     //TODO : You device does not support this game switch to CHrome
                     console.log("Not working");
                 }
-            };
+            })();
 
-            var sendSteeringInfo = function () {
-                $("#Y").innerHTML = steeringData.y;
-                $.ajax({
-                    type: "POST",
-                    url: steeringUrl,
-                    data: steeringData,
-                    success: function (data) {
-                        //TODO don't know what to do with this data
-                    }
+            var peerId = token + "steering";
+            var peer = new Peer(peerId, {key: apiKey});
+
+            var conn = peer.connect(token + "index");
+
+            var connDisplay;
+            peer.on('connection', function(conn) {
+                conn.on('data', function(data){
+                    connDisplay = peer.connect(token + "display");
+                    initiateTimer(interval);
+                });
+            });
+
+            conn.on('open', function(){
+                conn.send('INIT');
+            });
+
+            var initiateTimer = function (interval) {
+                connDisplay.on('open', function () {
+                    setInterval(function () {
+                        connDisplay.send(steeringData);
+                    }, 5);
                 });
             };
 
-            var initiateTimer = function (interval) {
-                return setInterval(function () {
-                    sendSteeringInfo();
-                }, interval);
-            };
-
-
             var gameStarted = false;
             $("#start").on("click", function (e) {
-                console.log(e);
                 if (!gameStarted) {
                     gameStarted = true;
                     var img = e.target;
                     $(img).attr("src", steeringImage);
-                    initiateTimer(interval);
                 }
             });
-            registerDeviceMotionEvent();
         });
     </script>
 </head>

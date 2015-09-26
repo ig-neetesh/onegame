@@ -5,9 +5,10 @@
     <title>OneGame</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link href="${resource(dir: 'css', file: 'common.css')}" rel="stylesheet" type="text/css"/>
+    <script src="${resource(dir: 'js', file: 'peer.js')}"></script>
 </head>
 <style>
-#left, #right {
+#left, #right, #yData {
     position: fixed;
     width: 75px;
     top: 100px;
@@ -20,10 +21,18 @@
 #right {
     right: 100px;
 }
+
+#yData {
+    left: 300px;
+    background: #000000;
+    color: #FFFFFF;
+}
 </style>
 
 <body>
 <img id="left" src="${resource(dir: 'images', file: 'left.png')}">
+
+<div id="yData"></div>
 <img id="right" src="${resource(dir: 'images', file: 'right.png')}">
 <table id="controls" style="display: none">
     <tr><td id="fps" colspan="2" align="right"></td></tr>
@@ -98,66 +107,11 @@
 <script src="${resource(dir: 'js', file: 'stats.js')}"></script>
 <script src="${resource(dir: 'js', file: 'common.js')}"></script>
 <script src="${resource(dir: 'js', file: 'play.js')}"></script>
-<script src="https://js.pusher.com/3.0/pusher.min.js"></script>
 <script src="${resource(dir: 'js', file: 'jquery-1.11.3.min.js')}"></script>
 <script>
     var apiKey = "${apiKey}";
     var channelId = "${token}";
-    var eventName = "driving";
-    var keys = [
-        {
-            keys: [KEY.LEFT, KEY.A], mode: 'down', action: function () {
-            keyLeft = true;
-        }
-        },
-        {
-            keys: [KEY.RIGHT, KEY.D], mode: 'down', action: function () {
-            keyRight = true;
-        }
-        },
-        {
-            keys: [KEY.UP, KEY.W], mode: 'down', action: function () {
-            keyFaster = true;
-        }
-        },
-        {
-            keys: [KEY.DOWN, KEY.S], mode: 'down', action: function () {
-            keySlower = true;
-        }
-        },
-        {
-            keys: [KEY.LEFT, KEY.A], mode: 'up', action: function () {
-            keyLeft = false;
-        }
-        },
-        {
-            keys: [KEY.RIGHT, KEY.D], mode: 'up', action: function () {
-            keyRight = false;
-        }
-        },
-        {
-            keys: [KEY.UP, KEY.W], mode: 'up', action: function () {
-            keyFaster = false;
-        }
-        },
-        {
-            keys: [KEY.DOWN, KEY.S], mode: 'up', action: function () {
-            keySlower = false;
-        }
-        }
-    ];
-    var onkey = function (keyCode, mode) {
-        var n, k;
-        for (n = 0; n < keys.length; n++) {
-            k = keys[n];
-            k.mode = k.mode || 'up';
-            if ((k.key == keyCode) || (k.keys && (k.keys.indexOf(keyCode) >= 0))) {
-                if (k.mode == mode) {
-                    k.action.call();
-                }
-            }
-        }
-    };
+
     function hideAll() {
         $("#left").hide();
         $("#right").hide();
@@ -167,34 +121,72 @@
         $("#" + dir).show();
     };
 
+    function getDir(data) {
+        $("#yData").innerHTML = "<p>" + (data.y) + "</p>";
+        if (data.y < -8 || data.y > 8) {
+            return "STOP";
+        }
+
+        if (data.y < -1) {
+            return "LEFT";
+        }
+
+        if (data.y > 1) {
+            return "RIGHT";
+        }
+
+        return "FORWARD";
+    }
+
     var eventCallback = function (data) {
         console.log(data);
+        var dir = getDir(data);
         var down = 'down';
         var up = 'up';
-        switch (data.dir) {
+        switch (dir) {
             case "LEFT":
+                keyLeft = true;
+                keyRight = false;
                 setDirection("left");
-                onkey(KEY.UP, down);
-                onkey(KEY.LEFT, down);
                 break;
             case "RIGHT":
+                keyRight = true;
+                keyLeft = false;
                 setDirection("right");
-                onkey(KEY.UP, down);
-                onkey(KEY.RIGHT, down);
                 break;
             case "FORWARD":
-                onkey(KEY.UP, down);
+                keyFaster = true;
+                keySlower = false;
                 break;
             case "BACKWARD":
-                onkey(KEY.UP, up);
-                onkey(KEY.LEFT, up);
-                onkey(KEY.RIGHT, up);
-                onkey(KEY.DOWN, down);
+                keySlower = true;
+                keyFaster = false;
+                break;
+            case "STOP":
+                keyLeft = false;
+                keyRight = false;
+                keyFaster = false;
+                keySlower = false;
                 break;
         }
     };
     hideAll();
+
+    var peerId = channelId + "display";
+    var peer = new Peer(peerId, {key: apiKey});
+
+    var conn = peer.connect(channelId + "steering");
+    conn.on('open', function () {
+        conn.send('INIT');
+    });
+
+    peer.on('connection', function (conn) {
+        console.log("inside connection");
+        conn.on('data', function (data) {
+            console.log(data);
+            eventCallback(data);
+        });
+    });
 </script>
-<script src="${resource(dir: 'js', file: 'control.js')}"></script>
 </body>
 </html>

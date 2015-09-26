@@ -70,6 +70,9 @@ class DataProviderService {
             co.isInitCall = true
         }
 
+        if (co.x == 0 && co.y == 0 && co.z == 0) {
+            return Direction.STOP
+        }
         if (co.y < -5 || co.y > 5) {
             return Direction.BACKWORD
         }

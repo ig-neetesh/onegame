@@ -13,10 +13,8 @@ class SteeringController {
         String event = "driving"
         if (co.isInitCall) {
             event = "init"
-            log.info "=============================INIT"
         }
         log.info("event Data : ${co.y} and DIR : ${dir}")
-        pushService.triggerPush(co.token, event, new JSON([dir: dir.toString()]).toString())
         render("OK")
     }
 }

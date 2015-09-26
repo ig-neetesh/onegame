@@ -10,6 +10,7 @@
 // if (System.properties["${appName}.config.location"]) {
 //    grails.config.locations << "file:" + System.properties["${appName}.config.location"]
 // }
+grails.config.locations = ["file:${basedir}/grails-app/conf/LocalConfig.groovy"]
 
 grails.project.groupId = appName // change this to alter the default package name and Maven publishing destination
 grails.mime.file.extensions = true // enables the parsing of file extensions from URLs into the request format
@@ -103,4 +104,9 @@ pusherapp {
     applicationKeys = ["9abe94e8385edabda6dd", "7a98549d2f0eb770043c", "d4ee4aed622450ab0351", "d6c65348acbd2b17c58d", "bcebe6af87150d9bb0bb"]
     applicationSecrets = ["10dcbbd04faed1626a77", "51082f77985513fe0073", "10e93aae3da797478478", "0cf0483cb301e0ab2bf9", "df5ecd1867be5eb30256"]
     dataPostInterval = 1000
+}
+
+peerjs {
+    apiKey = "ao4thr3le1xlxr"
+    dataPostInterval = 10
 }
