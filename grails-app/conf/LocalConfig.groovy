@@ -1,1 +1,3 @@
-grails.serverURL = "http://localhost:8080"
+import onegame.Util
+
+grails.serverURL = "http://${Util.ipAddress()}:8080"
