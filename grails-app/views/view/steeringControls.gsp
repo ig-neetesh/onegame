@@ -59,6 +59,7 @@
             };
 
             var sendSteeringInfo = function () {
+                $("#Y").innerHTML = steeringData.y;
                 $.ajax({
                     type: "POST",
                     url: steeringUrl,
@@ -93,6 +94,7 @@
 
 <body>
 <img id="start" src="${resource(dir: 'images', file: 'start_button.gif')}">
+<span id="Y"></span>
 <input type="hidden" id="token" value="${token}">
 <input type="hidden" id="interval" value="${interval}">
 </body>
