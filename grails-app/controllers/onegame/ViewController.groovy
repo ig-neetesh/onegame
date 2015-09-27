@@ -16,12 +16,29 @@ class ViewController {
     def display(String token) {
         String apiKey = credentialProviderService.applicationKey
         int interval = credentialProviderService.dataPostInterval
-        String viewName = dataProviderService.isMobileBrowser(request) ? 'steeringControls' : 'frontWindow'
+        String viewName = mobileView(token)
         Map settings = [
                 token   : token,
                 interval: interval,
                 apiKey  : apiKey
         ]
         render(view: viewName, model: settings)
+    }
+
+    private String mobileView(String token) {
+        boolean isMobile = dataProviderService.isMobileBrowser(request)
+        if (token.endsWith("v")) {
+            if (isMobile) {
+                return "tvremote"
+            }
+            log.info "Loading video page"
+            return "videos"
+        } else {
+            if (isMobile) {
+                return "steeringControls"
+            }
+            return "frontWindow"
+        }
+        return "steeringControls"
     }
 }

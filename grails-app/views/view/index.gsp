@@ -22,7 +22,7 @@
         cursor: pointer;
     }
 
-    #k, #m, #s {
+    #k, #m, #s, #v {
         display: none;
     }
 
@@ -34,20 +34,21 @@
         padding: 0 10px;
     }
 
-    #qrcode, #qrcode1, #qrcode2 {
+    #qrcode, #qrcode1, #qrcode2, #qrcodev {
         width: 110px;
         height: 110px;
         margin: 15px auto;
         background: #ffffff;
     }
 
-    #qrcode img, #qrcode1 img, #qrcode2 img {
+    #qrcode img, #qrcode1 img, #qrcode2 img, #qrcodev img {
         padding: 5px;
     }
     </style>
     <script>
         var token = "${token}";
         var url = "${grailsApplication.config.grails.serverURL}/play/";
+        var mode;
         var oneGame = angular.module('OneGame', []);
         oneGame.controller('myCtrl', function ($scope) {
             $scope.token = token;
@@ -55,6 +56,9 @@
             $scope.playUrl = function () {
                 if ($scope.mode == "keyboard") {
                     return "Start game";
+                }
+                if ($scope.mode == "video") {
+                    return (url + token + "v");
                 }
                 return (url + token);
             };
@@ -76,6 +80,9 @@
                     case "steering":
                         text = "Use URLs or QR code left and right respectively.";
                         break;
+                    case "video":
+                        text = "Use URLs or QR code to have a TV remote.";
+                        break;
                 }
 
                 return text;
@@ -93,7 +100,12 @@
 
         peer.on('connection', function (conn) {
             conn.on('data', function (data) {
-                eventCallback(data);
+                if (data == "VIDEO") {
+//                    window.open((url + token + "v"), 'OneGame', 'fullscreen=yes')
+                    window.location.assign(url + token + "v");
+                } else {
+                    eventCallback(data);
+                }
             });
         });
         $(document).ready(function () {
@@ -107,6 +119,7 @@
             (function () {
                 var u = (url + token);
                 qrCode('qrcode', u);
+                qrCode('qrcodev', u + "v");
                 qrCode('qrcode1', u + "l");
                 qrCode('qrcode2', u + "r");
             })();
@@ -137,6 +150,11 @@
                                                                                      value="steering"
                                                                                      ng-model="mode">  <label
                     for="s">Steering</label></div>
+
+            <div class="mode" ng-class="(mode=='video') ? 'selected' : ''"><input id="v" type="radio" name="mode"
+                                                                                  value="video"
+                                                                                  ng-model="mode">  <label
+                    for="v">TV</label></div>
             <br/>  <br/>  <br/>
 
             <p>{{content()}}</p>
@@ -165,6 +183,8 @@
                  style="text-transform: lowercase;font-size: xx-large" ng-click="modeChanged()">{{playUrl()}}</div>
 
             <div id="qrcode" ng-show="mode=='mobile'"></div>
+
+            <div id="qrcodev" ng-show="mode=='video'"></div>
         </div>
     </div>
 </header>

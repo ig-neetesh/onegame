@@ -27,17 +27,16 @@
     </style>
     <script>
         var steeringImage = "${resource(dir: 'images',file: 'steering.jpg')}";
-        var steeringUrl = "${g.createLink(controller: 'steering',action: 'control')}";
         var apiKey = "${apiKey}";
 
         $(document).ready(function () {
             var token = $("#token").val();
             var mainToken = token;
             var dual = false;
-            if(token.endsWith("l") || token.endsWith("r")){
+            if (token.endsWith("l") || token.endsWith("r")) {
                 dual = true;
-                token = token.replace("l","");
-                token = token.replace("r","");
+                token = token.replace("l", "");
+                token = token.replace("r", "");
             }
             var interval = $("#interval").val();
             console.log("Token : " + token);
